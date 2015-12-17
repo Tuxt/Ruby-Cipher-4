@@ -1,6 +1,4 @@
-# Ruby-Cipher-4
-An implementation of RC4 to try Ruby and Shoes
+# Ruby Cipher 4
+Playing with Ruby and Shoes: An implementation of RC4
 
-Text Encryption: ASCII -> Hexadecimal
-
-Text Decryption: Hexadecimal -> ASCII
+Text and File Encryption
