@@ -47,8 +47,10 @@ Shoes.app title: "Ruby Cipher 4" do
 						@browse = ask_open_file
 						if @browse.class == String then
 							@file.text = @browse
-							checkRun()
+						else
+							@file.text = "Selecciona"
 						end
+						checkRun()
 					end
 					@file = para "Selecciona", :margin => 10
 				end
@@ -135,7 +137,7 @@ Shoes.app title: "Ruby Cipher 4" do
 
 	def cifra()
 		if (@radio_texto.checked?)
-			# CIFRA TEXT
+			# CIFRA TEXTO
 			rc4 = RC4.new(@key.text)
 			salida = Array.new
 			plaintext = @texto.text.bytes
@@ -149,6 +151,7 @@ Shoes.app title: "Ruby Cipher 4" do
 			end
 		elsif (@radio_file.checked?)
 			# CIFRA ARCHIVO
+			
 		end
 	end
 	
