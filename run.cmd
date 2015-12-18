@@ -1,2 +1,5 @@
 @echo off
-shoes.exe main.rb
+
+start /B shoes.exe main.rb
+
+exit

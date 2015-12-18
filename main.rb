@@ -3,115 +3,114 @@ require("Converter")
 
 Shoes.app title: "Ruby Cipher 4" do
 	
-	# Cabecera
+	# Header
 	stack do
 		background black, :margin => 10, :curve => 12
 		title "Ruby Cipher 4", :margin => 10, align: "center", :stroke => white
 		caption "A Ruby implementation of RC4", align: "center", :stroke => white
 	end
 	
-	# Contenido
+	# Content
 	stack do
 		
-		# Columnas de modo
+		# Mode columns
 		flow do
-			# Columna izquierda: texto
+			# Left column: text
 			stack :width => "50%", :margin => 10 do
 				background gray(0.7), :curve => 4
 			
-				# Linea de radio
+				# Radio line
 				flow do
-					@radio_texto = radio :type
-					para "Texto"
+					@radio_text = radio :type
+					para "Text"
 				end
 				
-				# Linea de texto
+				# Text line
 				flow :margin => [10, 0, 10, 0] do
-					@texto = edit_line :width => "100%"
+					@text_input = edit_line :width => "100%"
 				end
 				
-				# Linea de selección de entrada
-				para strong("Entrada"), :margin => [10, 10, 10, 0]
+				# Input selection line
+				para strong("Input"), :margin => [10, 10, 10, 0]
 				flow :width => "100%", :margin_left => 10 do
-					@radio_entrada_ascii = radio :modo_entrada
+					@radio_input_ascii = radio :input_mode
 					para "ASCII"
-					@radio_entrada_base = radio :modo_entrada, :margin_left => 20
+					@radio_input_base = radio :input_mode, :margin_left => 20
 					para "Base"
-					@base_entrada = edit_line :width => "50", :height => 25, :margin_left => 5
+					@input_base = edit_line :width => "50", :height => 25, :margin_left => 5
 				end
-				
 			end
 			
-			# Columna derecha: archivo
+			# Right column: file
 			stack :width => "50%", :margin => 10 do
 				background gray(0.7), :curve => 4
 				
-				# Linea de radio
+				# Radio line
 				flow do
 					@radio_file = radio :type
-					para "Archivo"
+					para "File"
 				end
 				
-				# Línea de selección de archivo
+				# File selection line
 				flow :margin => 10 do
-					button "Examinar" do
+					button "Browse" do
 						@browse = ask_open_file
 						if @browse.class == String then
 							@file.text = @browse
 						else
-							@file.text = "Selecciona"
+							@file.text = "Select"
 						end
 						checkRun()
 					end
-					@file = para "Selecciona", :margin => 10
+					@file = para "Select", :margin => 10
 				end
 			end
 		end
 		
-		# Pila de acción
+		# Action stack
 		stack :width => "100%", :margin => 10 do
 			background gray(0.7), :curve => 4
 			
-			# Línea de clave
+			# Key line
 			flow :width => "100%", :margin => [10,10,10,0] do
 				stack :width => "10%" do
-					para "Clave"
+					para "Key"
 				end
 				stack :width => "90%" do
 					@key = edit_line :width => "100%"
 				end
 			end
 			
-			# Línea de botón cifrar
+			# Run button line
 			flow :margin => [10,0,10,10] do
-				@cifrar = button "RUN", :width => "100%" do
-					cifra()
+				@run_button = button "RUN", :width => "100%" do
+					encrypt()
 				end
 			end
 		end
 		
-		# Linea de selección de salida
-		para strong("Salida"), :margin => [10, 0, 10, 0]
+		# Output selection line
+		para strong("Output"), :margin => [10, 0, 10, 0]
 		flow :width => "100%", :margin_left => 10 do
-			@radio_salida_ascii = radio :modo_salida
+			@radio_output_ascii = radio :output_mode
 			para "ASCII"
-			@radio_salida_base = radio :modo_salida, :margin_left => 20
+			@radio_output_base = radio :output_mode, :margin_left => 20
 			para "Base"
-			@base_salida = edit_line :width => "50", :height => 25, :margin_left => 5
+			@base_output = edit_line :width => "50", :height => 25, :margin_left => 5
 		end
 		
-		# Linea de salida
+		# Output line
 		flow :margin => [10,0,10,0] do
 			@output = edit_line "", :width => "100%"
 		end
 	end
 	
 	
-	# Ejecución
-	@cifrar.state = "disabled"			# Deshabilitamos el botón de ejecución
+	# Execution
+	@run_button.state = "disabled"
 	
-	# Actualizar botones cuando cambien entradas y modos
-	@texto.change() do
+	# Check/Update run button ------------------------------- START
+	@text_input.change() do
 		checkRun()
 	end
 	
@@ -119,7 +118,7 @@ Shoes.app title: "Ruby Cipher 4" do
 		checkRun()
 	end
 	
-	@radio_texto.click() do
+	@radio_text.click() do
 		checkRun()
 	end
 	
@@ -127,51 +126,51 @@ Shoes.app title: "Ruby Cipher 4" do
 		checkRun()
 	end
 	
-	@radio_entrada_ascii.click() do
+	@radio_input_ascii.click() do
 		checkRun()
 	end
 	
-	@radio_entrada_base.click() do 
+	@radio_input_base.click() do 
 		checkRun()
 	end
 	
-	@radio_salida_ascii.click() do
+	@radio_output_ascii.click() do
 		checkRun()
 	end
 	
-	@radio_salida_base.click() do 
+	@radio_output_base.click() do 
 		checkRun()
 	end
 	
-	@base_entrada.change() do
+	@input_base.change() do
 		checkRun()
 	end
 
-	@base_salida.change() do
+	@base_output.change() do
 		checkRun()
 	end
 	
-	# Actualizar botones ------------------------------- END
+	# Check/Update run button ------------------------------- END
 	
 	
-	# Comprueba si habilita o deshabilita el botón de ejecución
+	# Enable/Disable run button
 	def checkRun()
-		if (@radio_texto.checked?)									# Comprobaciones modo texto
-			if(@texto.text.length != 0 && @key.text.length != 0)
-				if ( (@radio_entrada_ascii.checked? || ( @radio_entrada_base.checked? && checkBase(@base_entrada.text) ))  &&
-					  (@radio_salida_ascii.checked? || ( @radio_salida_base.checked? && checkBase(@base_salida.text) )) )
-					@cifrar.state = nil
+		if (@radio_text.checked?)									# Text mode
+			if(@text_input.text.length != 0 && @key.text.length != 0)
+				if ( (@radio_input_ascii.checked? || ( @radio_input_base.checked? && checkBase(@input_base.text) ))  &&
+					  (@radio_output_ascii.checked? || ( @radio_output_base.checked? && checkBase(@base_output.text) )) )
+					@run_button.state = nil
 				else
-					@cifrar.state = "disabled"
+					@run_button.state = "disabled"
 				end
 			else
-				@cifrar.state = "disabled"
+				@run_button.state = "disabled"
 			end
-		elsif (@radio_file.checked?)								# Comprobaciones modo archivo
+		elsif (@radio_file.checked?)								# File mode
 			if(@browse.class == String && @key.text.length != 0)
-				@cifrar.state = nil
+				@run_button.state = nil
 			else
-				@cifrar.state = "disabled"
+				@run_button.state = "disabled"
 			end
 		end
 	end
@@ -180,42 +179,60 @@ Shoes.app title: "Ruby Cipher 4" do
 		true if Integer(base) rescue false
 	end
 	
-	def cifra()
-		if (@radio_texto.checked?)
-			# CIFRA TEXTO
-			# Comprueba bases
-			if (@radio_entrada_base.checked? && (Integer(@base_entrada.text) < 1 || Integer(@base_entrada.text) > 30))
-				alert("Base de entrada inválida")
+	def encrypt()
+		if (@radio_text.checked?)
+			# ENCRYPT TEXT
+			# Check base
+			if (@radio_input_base.checked? && (Integer(@input_base.text) < 1 || Integer(@input_base.text) > 30))
+				alert("Invalid input base")
 				return
 			end
-			if (@radio_salida_base.checked? && (Integer(@base_salida.text) < 1 || Integer(@base_salida.text) > 30))
-				alert("Base de salida inválida")
+			if (@radio_output_base.checked? && (Integer(@base_output.text) < 1 || Integer(@base_output.text) > 30))
+				alert("Invalid output base")
 				return
 			end
 				
 			rc4 = RC4.new(@key.text)
 			
-			# Obtenemos texto plano
-			if (@radio_entrada_ascii.checked?)
-				message = Converter.ascii_to_dec_array(@texto.text)
-			elsif (@radio_entrada_base.checked?)
-				message = Converter.num_to_dec_array(@texto.text, @base_entrada.text)
+			# Gets original text
+			if (@radio_input_ascii.checked?)
+				message = Converter.ascii_to_dec_array(@text_input.text)
+			elsif (@radio_input_base.checked?)
+				message = Converter.num_to_dec_array(@text_input.text, @input_base.text)
 			end
 			
-			# Ciframos
+			# Encrypt
 			message.count.times do |i|
 				message[i] = message[i] ^ rc4.more
 			end
-			# Devolvemos texto cifrado
-			if (@radio_salida_ascii.checked?)
+			
+			# Show result text
+			if (@radio_output_ascii.checked?)
 				@output.text = Converter.dec_array_to_ascii(message)
-			elsif (@radio_salida_base.checked?)
-				@output.text = Converter.dec_array_to_num(message, @base_salida.text)
+			elsif (@radio_output_base.checked?)
+				@output.text = Converter.dec_array_to_num(message, @base_output.text)
 			end
 			
 		elsif (@radio_file.checked?)
-			# CIFRA ARCHIVO
-			alert("Not implemented yet")
+			# ENCRYPT FILE
+			# Check file extension
+			if (@browse[-4,4] == ".rc4")
+				destination = File.new(@browse[0,@browse.length-4],"wb")
+			elsif
+				destination = File.new(@browse+".rc4", "wb")
+			end
+			
+			# Start cipher algorithm
+			rc4 = RC4.new(@key.text)
+			
+			# Read and cipher
+			source = File.open(@browse, "rb")
+			source.each_byte do |byte|
+				destination.print (byte ^ rc4.more).chr
+			end
+			destination.close
+			source.close
+			alert("File encrypted!")
 		end
 	end
 	
