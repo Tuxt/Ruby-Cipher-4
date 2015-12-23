@@ -194,11 +194,11 @@ Shoes.app title: "Ruby Cipher 4" do
 		if (@radio_text.checked?)
 			# ENCRYPT TEXT
 			# Check base
-			if (@radio_input_base.checked? && (Integer(@input_base.text) < 1 || Integer(@input_base.text) > 30))
+			if (@radio_input_base.checked? && (Integer(@input_base.text) < 2 || Integer(@input_base.text) > 30))
 				alert("Invalid input base")
 				return
 			end
-			if (@radio_output_base.checked? && (Integer(@base_output.text) < 1 || Integer(@base_output.text) > 30))
+			if (@radio_output_base.checked? && (Integer(@base_output.text) < 2 || Integer(@base_output.text) > 30))
 				alert("Invalid output base")
 				return
 			end
